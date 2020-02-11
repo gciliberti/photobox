@@ -3,13 +3,13 @@ require 'vendor/autoload.php';
 
 $config = parse_ini_file("conf/conf.ini");
 $db = new Illuminate\Database\Capsule\Manager();
-$db->addConnection($config);
-$db->setAsGlobal();
-$db->bootEloquent();
+
+$mongoclient = new \MongoDB\Client("mongodb://mongo_photobox");
+$db = $mongoclient->photobox;
 
 $errors = require './conf/errors.php';
 
-$configuration = new \Slim\Container(['settings' => ['displayErrorDetails' => true]]);
+$configuration = new \Slim\Container(['settings' => ['displayErrorDetails' => true],'mongoclient'=>$db]);
 
 $app_config = array_merge($errors);
 
@@ -22,8 +22,11 @@ $app->get('/hello/{name}', function (Request $req, Response $resp, $args){
   return $resp;
 });
 /*get tous les utilisateurs*/
-$app->get('/users[/]', \photobox\control\UserController::class . 'getUsers');
+$app->get('/users[/]', \photobox\control\UserController::class . ':getUsers');
 /*ajoute un nouveau user*/
 $app->post('/users/{nom}/{mail}', \photobox\control\UserController::class . ':insertUser');
+//Ajouter une image (depuis un string b64)
 $app->post('/picture', \photobox\control\PictureController::class . ':store');
+//Get une image avec son ID
+$app->get('/picture/{id}', \photobox\control\PictureController::class . ':send');
 $app->run();

@@ -4,10 +4,15 @@ namespace photobox\control;
 
 use\Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-use photobox\utils\Writer as Writer;
+use \photobox\utils\Writer;
 
 class PictureController{
+
   public function store(Request $request,Response $response){
+    $mongoclient = $this->mongoclient;
+    $
+
+
     $input = $request->getParsedBody();
     $rawdata = $input["picture"];
     $rawdata = explode(',',$rawdata);
@@ -15,7 +20,25 @@ class PictureController{
     $basename = bin2hex(random_bytes(16));
     $path = $_SERVER['DOCUMENT_ROOT'] . "/uploads/" . $basename;
     file_put_contents($path,$picturecontent);
-    Writter::jsonResponse();
+    $response = Writer::jsonResponse($response,201,[
+      "picture" => $basename,
+    ]);
+    //Il faudra inclure l'ajout en BDD
+
+    return $response;
   }
+
+  public function send(Request $request, Response $response)
+  {
+    $picture = $request->getAttribute("id");
+    $picture = file_get_contents($_SERVER['DOCUMENT_ROOT'] . "/uploads/" . $picture);
+    $picture = base64_encode($picture);
+
+    $response = Writer::jsonResponse($response,200,[
+      "picture" => $picture,
+    ]);
+    return $response;
+  }
+
 }
  ?>

@@ -2,7 +2,7 @@
     "require": {
         "slim/slim": "3.*",
      "illuminate/database":"^6.0",
-     "mongodb/mongodb": "^1.5"
+        "mongodb/mongodb": "^1.6"
     },
     "autoload": {
        "psr-4" : {
