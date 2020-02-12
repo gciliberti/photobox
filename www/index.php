@@ -25,6 +25,7 @@ $app->get('/hello/{name}', function (Request $req, Response $resp, $args){
 });
 /*get tous les utilisateurs*/
 $app->get('/users[/]', \photobox\control\UserController::class . ':getUsers');
+
 /*ajoute un nouveau user*/
 $app->post('/users/{nom}/{mail}', \photobox\control\UserController::class . ':insertUser');
 //Ajouter une image (depuis un string b64)
@@ -33,5 +34,6 @@ $app->post('/picture', \photobox\control\PictureController::class . ':store');
 $app->get('/picture/{id}', \photobox\control\PictureController::class . ':send');
 
 $app->post('/event', \photobox\control\EventController::class . ':create');
+$app->post('/users', \photobox\control\UserController::class . ':createUsers');
 
 $app->run();

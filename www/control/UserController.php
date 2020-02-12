@@ -3,29 +3,30 @@ namespace photobox\control;
 
 use\Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-use \photobox\model\User as user;
+use \photobox\utils\Writer;
 
 class UserController 
 {
-    protected $c;
+    protected $db;
 
-    public function __construct(\Slim\Container $c = null){
-        $this->c = $c;
+    public function __construct($container){
+        $this->db = $container->get('db');
     }
 
     public function getUsers(Request $req, Response $resp, array $args){
-        try {
-            $users = user::all();
-            $count = user::all()->count();
-            $rs = $resp->withStatus(201)
-                        ->withHeader('Content-Type', 'application/json;charset=utf-8');
-            $rs->getBody()->write(json_encode([
-                "type" => "collection",
-                "count" => $count,
-                "users" => $users]));
-                return $rs;
-        }catch (\Exception $e){
-            return Writer::json_error($rs, 404, $e->getMessage());
+        
+        $users = $this->db->users->find([]);
+        foreach($users as $user){
+          return $user->pseudo." ".$user->mail;
         }
+        //var_dump($users);
+        //die("getUsers");
+        
+        $resp = Writer::jsonResponse($resp,200,["users" => $users]);
+        return $resp;
+    }
+
+    public function createUser(Request $req, Response $resp, array $args){
+
     }
 }
