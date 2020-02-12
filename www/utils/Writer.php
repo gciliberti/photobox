@@ -20,4 +20,15 @@ class Writer {
         $token = bin2hex($token);
         return $token;
     }
+
+    public static function bsonResponse(Response $response, $status, $bson){
+      $json_response = \MongoDB\BSON\toJSON(\MongoDB\BSON\fromPHP($bson));
+      $response = $response->withStatus($status)
+          ->withHeader("Content-Type", "application/json;charset=utf-8");
+
+      $response->getBody()
+          ->write($json_response);
+
+      return $response;
+    }
 }
