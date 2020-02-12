@@ -7,10 +7,14 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use \photobox\utils\Writer;
 
 class PictureController{
+  private $db;
+  public function __construct($container){
+    $this->db = $container->get('db');
+  }
 
   public function store(Request $request,Response $response){
-    $mongoclient = $this->mongoclient;
-    $
+
+
 
 
     $input = $request->getParsedBody();
@@ -20,8 +24,10 @@ class PictureController{
     $basename = bin2hex(random_bytes(16));
     $path = $_SERVER['DOCUMENT_ROOT'] . "/uploads/" . $basename;
     file_put_contents($path,$picturecontent);
+    var_dump($this->db);
     $response = Writer::jsonResponse($response,201,[
       "picture" => $basename,
+      "debug" => var_dump($this->db),
     ]);
     //Il faudra inclure l'ajout en BDD
 

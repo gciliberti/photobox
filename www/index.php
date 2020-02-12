@@ -9,11 +9,13 @@ $db = $mongoclient->photobox;
 
 $errors = require './conf/errors.php';
 
-$configuration = new \Slim\Container(['settings' => ['displayErrorDetails' => true],'mongoclient'=>$db]);
+$configuration = new \Slim\Container(['settings' => ['displayErrorDetails' => true]]);
 
 $app_config = array_merge($errors);
 
 $app = new \Slim\App(new \Slim\Container($app_config,$configuration));
+$c = $app->getContainer();
+$c['db'] = $db;
 
 /*route test*/
 $app->get('/hello/{name}', function (Request $req, Response $resp, $args){
@@ -29,4 +31,7 @@ $app->post('/users/{nom}/{mail}', \photobox\control\UserController::class . ':in
 $app->post('/picture', \photobox\control\PictureController::class . ':store');
 //Get une image avec son ID
 $app->get('/picture/{id}', \photobox\control\PictureController::class . ':send');
+
+$app->post('/event', \photobox\control\EventController::class . ':create');
+
 $app->run();
