@@ -32,6 +32,24 @@ class EventController{
     return $response;
   }
 
+  public function getEventwithId(Request $request,Response $response, $args){
+    $event_id = $request->getAttribute('id');
+    $event = $this->db->event
+    ->findOne(['_id'=> new \MongoDB\BSON\ObjectId("$event_id")]);
+    $eventarray = [];
+    $eventarray["id"]=(string)$event->_id;
+    $eventarray["name"]=$event->name;
+    $eventarray["date"]=$event->date;
+    $eventarray["location"]=$event->location;
+    $eventarray["public"]=$event->public;
+    $eventarray["description"]=$event->description;
+    $eventarray["token"]=$event->token;
+    $reponse = Writer::jsonResponse($response,200,$eventarray);
+
+    return $response;
+
+  }
+
 
 }
- ?>
+?>
