@@ -36,15 +36,16 @@ class EventController{
     $event_id = $request->getAttribute('id');
     $event = $this->db->event
     ->findOne(['_id'=> new \MongoDB\BSON\ObjectId("$event_id")]);
-    $eventarray = [];
-    $eventarray["id"]=(string)$event->_id;
-    $eventarray["name"]=$event->name;
-    $eventarray["date"]=$event->date;
-    $eventarray["location"]=$event->location;
-    $eventarray["public"]=$event->public;
-    $eventarray["description"]=$event->description;
-    $eventarray["token"]=$event->token;
-    $reponse = Writer::jsonResponse($response,200,$eventarray);
+    $eventarray = [
+      "id"=>(string)$event->_id,
+      "name"=>$event->name,
+      "date"=>$event->date,
+      "location"=>$event->location,
+      "public"=>$event->public,
+      "description"=>$event->description,
+      "token"=>$event->token,
+    ];
+    $response = Writer::jsonResponse($response,200,$eventarray);
 
     return $response;
 

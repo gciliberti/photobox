@@ -2,7 +2,8 @@
     "require": {
         "slim/slim": "3.*",
      "illuminate/database":"^6.0",
-        "mongodb/mongodb": "^1.6"
+        "mongodb/mongodb": "^1.6",
+        "firebase/php-jwt": "^5.0"
     },
     "autoload": {
        "psr-4" : {
