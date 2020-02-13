@@ -23,20 +23,27 @@ $app->get('/hello/{name}', function (Request $req, Response $resp, $args){
   $resp->getBody()->write("Hello, $name");
   return $resp;
 });
+
 /*get tous les utilisateurs*/
 $app->get('/users[/]', \photobox\control\UserController::class . ':getUsers');
+
 /*Get un user en particulier*/
 $app->get('/user/{pseudo}[/]', \photobox\control\UserController::class . ':getUser');
+
+/*get les évènements auxquels un user a participé*/
+$app->get('/users/{id}/{events}[/]', \photobox\control\UserController::class . ':getUserEvents');
+
 /*ajoute un nouveau user*/
 $app->post('/user[/]', \photobox\control\UserController::class . ':insertUser');
+
 //Ajouter une image (depuis un string b64)
 $app->post('/picture', \photobox\control\PictureController::class . ':store');
+
 //Get une image avec son ID
 $app->get('/picture/{id}', \photobox\control\PictureController::class . ':send');
 
 $app->post('/event', \photobox\control\EventController::class . ':create');
 
 $app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId');
-
 
 $app->run();
