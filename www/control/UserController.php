@@ -20,9 +20,7 @@ class UserController
             $array['pseudo'] = $user->pseudo;
             $array['mail'] = $user->mail;
             $resp = Writer::jsonResponse($resp,200,['users' => $array]);
-            //var_dump($array);
         }
-        //die("debug");
         return $resp;
     }
 
@@ -70,7 +68,6 @@ class UserController
             'nom' => $insert['nom'], 'prenom' => $insert['prenom'], 'date_naiss' => $insert['date_naiss'], 'tel' => $insert['tel'], 'mail' => $insert['mail'],
             'mdp' => $mdp, 'date_insc' => $insert['date_insc'], 'ban_user' => false
         );
-        var_dump($user);
 
         $create = $this->db->users->insertOne($user);
         $id = $create->getInsertedId();
