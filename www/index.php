@@ -28,10 +28,10 @@ $app->get('/hello/{name}', function (Request $req, Response $resp, $args){
 $app->get('/users[/]', \photobox\control\UserController::class . ':getUsers');
 
 /*Get un user en particulier*/
-$app->get('/user/{pseudo}[/]', \photobox\control\UserController::class . ':getUser');
+$app->get('/user/{nom}[/]', \photobox\control\UserController::class . ':getUser');
 
 /*get les évènements auxquels un user a participé*/
-$app->get('/users/{id}/{events}[/]', \photobox\control\UserController::class . ':getUserEvents');
+$app->get('/users/{id}/{event_id}[/]', \photobox\control\UserController::class . ':getUserEvents');
 
 /*ajoute un nouveau user*/
 $app->post('/user[/]', \photobox\control\UserController::class . ':insertUser');
