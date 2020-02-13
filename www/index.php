@@ -37,4 +37,5 @@ $app->post('/event', \photobox\control\EventController::class . ':create');
 $app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId');
 
 
+
 $app->run();
