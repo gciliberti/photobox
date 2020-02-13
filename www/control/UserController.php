@@ -5,7 +5,7 @@ use\Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \photobox\utils\Writer;
 
-class UserController 
+class UserController
 {
     protected $db;
 
@@ -13,7 +13,7 @@ class UserController
         $this->db = $container->get('db');
     }
 
-    public function getUsers(Request $req, Response $resp, array $args){        
+    public function getUsers(Request $req, Response $resp, array $args){
         $users = $this->db->users->find([]);
         foreach($users as $user){
             $array = array();
@@ -82,6 +82,7 @@ class UserController
         //$date = new Date('d-m-Y', $insert["date_insc"]);
         $user = array
         (
+<<<<<<< HEAD
             'nom' => $insert['nom'], 
             'prenom' => $insert['prenom'], 
             'date_naiss' => $insert['date_naiss'], 
@@ -89,6 +90,15 @@ class UserController
             'mail' => $insert['mail'],
             'mdp' => $mdp, 
             'date_insc' => $insert['date_insc'], 
+=======
+            'nom' => $insert['nom'],
+            'prenom' => $insert['prenom'],
+            'date_naiss' => $insert['date_naiss'],
+            'tel' => $insert['tel'],
+            'mail' => $insert['mail'],
+            'mdp' => $mdp,
+            'date_insc' => date("Y-m-d H:i:s"),
+>>>>>>> 7f354b7d9fc650f361a41006c86006a77f26491f
             'ban_user' => false
         );
 

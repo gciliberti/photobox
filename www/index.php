@@ -23,7 +23,6 @@ $app->get('/hello/{name}', function (Request $req, Response $resp, $args){
   $resp->getBody()->write("Hello, $name");
   return $resp;
 });
-
 /*get tous les utilisateurs*/
 $app->get('/users[/]', \photobox\control\UserController::class . ':getUsers');
 
@@ -45,5 +44,7 @@ $app->get('/picture/{id}', \photobox\control\PictureController::class . ':send')
 $app->post('/event', \photobox\control\EventController::class . ':create');
 
 $app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId');
+
+$app->post('/login', \photobox\control\AuthController::class . ':login');
 
 $app->run();
