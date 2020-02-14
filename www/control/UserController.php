@@ -25,11 +25,11 @@ class UserController
     }
 
     public function getUser(Request $req, Response $resp, array $args){
-        $nom = $args['nom'];
-        $user = $this->db->users->find(['nom' => $nom]);
+        $id = $args['id'];
+        $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
         foreach($user as $utilisateur){
             $array = array();
-            $array['id'] = $utilisateur->_id;
+            $array['_id'] = (string)$utilisateur->_id;
             $array['nom'] = $oneuser->nom;
             $array['prenom'] = $oneuser->prenom;
             $array['date_naiss'] = $oneuser->date_naiss;
@@ -37,41 +37,41 @@ class UserController
             $array['mail'] = $utilisateur->mail;
             $array['date_insc'] = $utilisateur->date_insc;
         }
+        //var_dump($array);
         $resp = Writer::jsonResponse($resp,200,['user' => $array]);
         return $resp;
     }
-
+    /*Récupérer les évènements{id} auxquels le membre a participé*/
     public function getUserEvents(Request $req, Response $resp, array $args){
         $id = $args['id'];
         //var_dump($id);
         $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
         foreach($user as $oneuser){
             $arrayuser = array();
-            $arrayuser['user']['_id'] = (string)$oneuser->_id;
-            $arrayuser['user']['nom'] = $oneuser->nom;
-            $arrayuser['user']['prenom'] = $oneuser->prenom;
-            $arrayuser['user']['date_naiss'] = $oneuser->date_naiss;
-            $arrayuser['user']['tel'] = $oneuser->tel;
-            $arrayuser['user']['mail'] = $oneuser->mail;
-            $arrayuser['user']['mdp'] = $oneuser->mdp;
-            $arrayuser['user']['date_insc'] = $oneuser->date_insc;
-            $arrayuser['user']['ban_user'] = $oneuser->ban_user;
+            $arrayuser['_id'] = (string)$oneuser->_id;
+            $arrayuser['nom'] = $oneuser->nom;
+            $arrayuser['prenom'] = $oneuser->prenom;
+            $arrayuser['date_naiss'] = $oneuser->date_naiss;
+            $arrayuser['tel'] = $oneuser->tel;
+            $someone = $arrayuser['mail'] = $oneuser->mail;
         }
-        //modifier la recherche by(id) ou mail
-        $events = $this->db->event->find(['users' => $arrayuser['user']['members']]);
+        //var_dump($arrayuser);
+        
+        $events = $this->db->event->find(['members' => $arrayuser['mail']]);
         foreach($events as $event){
             $arrayevent = array();
-            $arrayevent['event']['_id'] = $event->_id;
-            $arrayevent['event']['name'] = $event->name;
-            $arrayevent['event']['date'] = $event->date;
-            $arrayevent['event']['location'] = $event->location;
-            $arrayevent['event']['public'] = $event->public;
-            $arrayevent['event']['description'] = $event->description;
-            $arrayevent['event']['token'] = $event->token;
-            $arrayevent['event']['members'] = $event->members;
+            $arrayevent['_id'] = $event->_id;
+            $arrayevent['name'] = $event->name;
+            $arrayevent['date'] = $event->date;
+            $arrayevent['location'] = $event->location;
+            $arrayevent['public'] = $event->public;
+            $arrayevent['description'] = $event->description;
+            $arrayevent['token'] = $event->token;
+            $arrayevent['members'] = $event->members;
+            $evenements[] = $arrayevent;
         }
-        //var_dump($arrayevent);
-        $resp = Writer::jsonResponse($resp,200,['user' => $arrayuser, 'event' => $arrayevent]);
+        //var_dump($event);
+        $resp = Writer::jsonResponse($resp,200,['member' => $someone, 'events' => $evenements]);
         return $resp;
     }
 
@@ -79,18 +79,8 @@ class UserController
         $insert = $req->getParsedBody();
         //Hash le pwd d'un utilisateur
         $mdp = password_hash($insert['mdp'], PASSWORD_DEFAULT);
-        //$date = new Date('d-m-Y', $insert["date_insc"]);
         $user = array
         (
-<<<<<<< HEAD
-            'nom' => $insert['nom'], 
-            'prenom' => $insert['prenom'], 
-            'date_naiss' => $insert['date_naiss'], 
-            'tel' => $insert['tel'], 
-            'mail' => $insert['mail'],
-            'mdp' => $mdp, 
-            'date_insc' => $insert['date_insc'], 
-=======
             'nom' => $insert['nom'],
             'prenom' => $insert['prenom'],
             'date_naiss' => $insert['date_naiss'],
@@ -98,7 +88,6 @@ class UserController
             'mail' => $insert['mail'],
             'mdp' => $mdp,
             'date_insc' => date("Y-m-d H:i:s"),
->>>>>>> 7f354b7d9fc650f361a41006c86006a77f26491f
             'ban_user' => false
         );
 
