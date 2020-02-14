@@ -29,11 +29,11 @@ $app->get('/users[/]', \photobox\control\UserController::class . ':getUsers');
 /*Get un user en particulier*/
 $app->get('/user/{id}[/]', \photobox\control\UserController::class . ':getUser');
 
-/*get les évènements auxquels un user a participé*/
-$app->get('/user/{id}/{events}[/]', \photobox\control\UserController::class . ':getUserEvents');
-
 /*ajoute un nouveau user*/
 $app->post('/user[/]', \photobox\control\UserController::class . ':insertUser');
+
+/*modifier le profil d'un utilisateur*/
+$app->put('/editUser/{id}[/]', \photobox\control\UserController::class . ':updateUserProfile');
 
 //Ajouter une image (depuis un string b64)
 $app->post('/picture', \photobox\control\PictureController::class . ':store');

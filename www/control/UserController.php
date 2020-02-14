@@ -30,48 +30,14 @@ class UserController
         foreach($user as $utilisateur){
             $array = array();
             $array['_id'] = (string)$utilisateur->_id;
-            $array['nom'] = $oneuser->nom;
-            $array['prenom'] = $oneuser->prenom;
-            $array['date_naiss'] = $oneuser->date_naiss;
-            $array['tel'] = $oneuser->tel;
+            $array['nom'] = $utilisateur->nom;
+            $array['prenom'] = $utilisateur->prenom;
+            $array['date_naiss'] = $utilisateur->date_naiss;
+            $array['tel'] = $utilisateur->tel;
             $array['mail'] = $utilisateur->mail;
             $array['date_insc'] = $utilisateur->date_insc;
         }
-        //var_dump($array);
         $resp = Writer::jsonResponse($resp,200,['user' => $array]);
-        return $resp;
-    }
-    /*Récupérer les évènements{id} auxquels le membre a participé*/
-    public function getUserEvents(Request $req, Response $resp, array $args){
-        $id = $args['id'];
-        //var_dump($id);
-        $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
-        foreach($user as $oneuser){
-            $arrayuser = array();
-            $arrayuser['_id'] = (string)$oneuser->_id;
-            $arrayuser['nom'] = $oneuser->nom;
-            $arrayuser['prenom'] = $oneuser->prenom;
-            $arrayuser['date_naiss'] = $oneuser->date_naiss;
-            $arrayuser['tel'] = $oneuser->tel;
-            $someone = $arrayuser['mail'] = $oneuser->mail;
-        }
-        //var_dump($arrayuser);
-        
-        $events = $this->db->event->find(['members' => $arrayuser['mail']]);
-        foreach($events as $event){
-            $arrayevent = array();
-            $arrayevent['_id'] = $event->_id;
-            $arrayevent['name'] = $event->name;
-            $arrayevent['date'] = $event->date;
-            $arrayevent['location'] = $event->location;
-            $arrayevent['public'] = $event->public;
-            $arrayevent['description'] = $event->description;
-            $arrayevent['token'] = $event->token;
-            $arrayevent['members'] = $event->members;
-            $evenements[] = $arrayevent;
-        }
-        //var_dump($event);
-        $resp = Writer::jsonResponse($resp,200,['member' => $someone, 'events' => $evenements]);
         return $resp;
     }
 
@@ -90,12 +56,29 @@ class UserController
             'date_insc' => date("Y-m-d H:i:s"),
             'ban_user' => false
         );
-
         $create = $this->db->users->insertOne($user);
         $id = $create->getInsertedId();
         $user['id'] = $id;
-        $response = Writer::jsonResponse($resp,201,$user);
-
+        $resp = Writer::jsonResponse($resp,201,$user);
         return $resp;
+    }
+
+    public function updateUserProfile(Request $req, Response $resp, array $args){
+        $update = $req->getParsedBody();
+        $id = $args['id'];
+        //var_dump($update, $id);       
+        $mdp = password_hash($update['mdp'], PASSWORD_DEFAULT);
+        $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
+        foreach($user as $utilisateur){
+            $utilisateur->nom = $update['nom'];
+            $utilisateur->prenom = $update['prenom'];
+            $utilisateur->mail = $update['mail'];
+            $utilisateur->tel = $update['tel'];
+            $utilisateur->mdp = $mdp;
+        }
+        var_dump($utilisateur);
+        $maj = $this->db->users->updateOne($utilisateur);
+        $resp = Writer::jsonResponse($resp,200,$utilisateur);
+        //return $resp;
     }
 }
