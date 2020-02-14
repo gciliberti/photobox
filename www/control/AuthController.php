@@ -25,7 +25,17 @@ class AuthController{
 
       $token = AuthJWT::generateToken($input['mail']);
 
-      $response = Writer::jsonResponse($response,200,["token"=>$token]);
+      $userarray = [
+        "nom" => $user->nom,
+        "prenom" => $user->prenom,
+        "date_naiss" => $user->date_naiss,
+        "tel" => $user->tel,
+        "mail"=> $user->mail,
+        "date_insc" => $user->date_insc,
+        "token" => $token
+      ];
+
+      $response = Writer::jsonResponse($response,200,$userarray);
     }else{
       $response = Writer::jsonResponse($response,401,["error"=>"login mismatch"]);
     }

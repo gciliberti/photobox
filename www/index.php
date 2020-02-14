@@ -41,9 +41,17 @@ $app->post('/picture', \photobox\control\PictureController::class . ':store');
 //Get une image avec son ID
 $app->get('/picture/{id}', \photobox\control\PictureController::class . ':send');
 
-$app->post('/event', \photobox\control\EventController::class . ':create');
+$app->post('/event', \photobox\control\EventController::class . ':create')
+->add(\photobox\middleware\AuthJWT::class . ":checkToken");
 
-$app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId');
+$app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId')
+->add(\photobox\middleware\AuthJWT::class . ":checkToken");
+
+$app->get('/events',\photobox\control\EventController::class . ':getUserEvents')
+->add(\photobox\middleware\AuthJWT::class . ":checkToken");
+
+$app->get('/events/involved',\photobox\control\EventController::class . ':getUserRegisteredEvents')
+->add(\photobox\middleware\AuthJWT::class . ":checkToken");
 
 $app->post('/login', \photobox\control\AuthController::class . ':login');
 
