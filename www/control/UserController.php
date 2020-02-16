@@ -25,12 +25,15 @@ class UserController
     }
 
     public function getUser(Request $req, Response $resp, array $args){
-        $pseudo = $args['pseudo'];
-        $user = $this->db->users->find(['pseudo' => $pseudo]);
+        $id = $args['id'];
+        $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
         foreach($user as $utilisateur){
             $array = array();
-            $array['id'] = $utilisateur->_id;
-            $array['pseudo'] = $utilisateur->pseudo;
+            $array['_id'] = (string)$utilisateur->_id;
+            $array['nom'] = $utilisateur->nom;
+            $array['prenom'] = $utilisateur->prenom;
+            $array['date_naiss'] = $utilisateur->date_naiss;
+            $array['tel'] = $utilisateur->tel;
             $array['mail'] = $utilisateur->mail;
             $array['date_insc'] = $utilisateur->date_insc;
         }
@@ -38,31 +41,10 @@ class UserController
         return $resp;
     }
 
-    public function getUserEvents(Request $req, Response $resp, array $args){
-        $id = $args['id'];
-        //var_dump($id);
-        $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
-        foreach($user as $oneuser){
-            $arrayuser = array();
-            $arrayuser['_id'] = (string)$oneuser->_id;
-            $arrayuser['pseudo'] = $oneuser->pseudo;
-            $arrayuser['mail'] = $oneuser->mail;
-            $arrayuser['mdp'] = $oneuser->mdp;
-            $arrayuser['date_insc'] = $oneuser->date_insc;
-            $arrayuser['ban_user'] = $oneuser->ban_user;
-        }
-
-        $event = $this->db->event->find(['users' => $arrayuser["event_token"]["name"]]);
-
-        $resp = Writer::jsonResponse($resp,200,['user' => $arrayuser]);
-        return $resp;
-    }
-
     public function insertUser(Request $req, Response $resp, array $args){
         $insert = $req->getParsedBody();
         //Hash le pwd d'un utilisateur
         $mdp = password_hash($insert['mdp'], PASSWORD_DEFAULT);
-        //$date = new Date('d-m-Y', $insert["date_insc"]);
         $user = array
         (
             'nom' => $insert['nom'],
@@ -74,12 +56,29 @@ class UserController
             'date_insc' => date("Y-m-d H:i:s"),
             'ban_user' => false
         );
-
         $create = $this->db->users->insertOne($user);
         $id = $create->getInsertedId();
         $user['id'] = $id;
-        $response = Writer::jsonResponse($resp,201,$user);
-
+        $resp = Writer::jsonResponse($resp,201,$user);
         return $resp;
+    }
+
+    public function updateUserProfile(Request $req, Response $resp, array $args){
+        $update = $req->getParsedBody();
+        $id = $args['id'];
+        //var_dump($update, $id);       
+        $mdp = password_hash($update['mdp'], PASSWORD_DEFAULT);
+        $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
+        foreach($user as $utilisateur){
+            $utilisateur->nom = $update['nom'];
+            $utilisateur->prenom = $update['prenom'];
+            $utilisateur->mail = $update['mail'];
+            $utilisateur->tel = $update['tel'];
+            $utilisateur->mdp = $mdp;
+        }
+        var_dump($utilisateur);
+        $maj = $this->db->users->updateOne($utilisateur);
+        $resp = Writer::jsonResponse($resp,200,$utilisateur);
+        //return $resp;
     }
 }

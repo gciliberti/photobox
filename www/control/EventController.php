@@ -24,6 +24,7 @@ class EventController{
       "description" => $input['description'],
       "members" => [$usermail],
       "token" => Writer::generateToken(),
+      "members" => $input["members"]
     ];
 
     $insert = $this->db->event->insertOne($event);
