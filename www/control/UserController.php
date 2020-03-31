@@ -4,6 +4,8 @@ namespace photobox\control;
 use\Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \photobox\utils\Writer;
+use \photobox\middleware\AuthJWT;
+use \Firebase\JWT\JWT;
 
 class UserController
 {
@@ -17,9 +19,10 @@ class UserController
         $users = $this->db->users->find([]);
         foreach($users as $user){
             $array = array();
-            $array['pseudo'] = $user->pseudo;
+            $array['nom'] = $user->nom;
+            $array['prenom'] = $user->prenom;
             $array['mail'] = $user->mail;
-            $resp = Writer::jsonResponse($resp,200,['users' => $array]);
+            $resp = Writer::jsonResponse($resp,200,['users',['nom' => $user->nom, 'prenom'=>$user->prenom, 'mail'=>$user->mail]]);
         }
         return $resp;
     }
@@ -36,6 +39,7 @@ class UserController
             $array['tel'] = $utilisateur->tel;
             $array['mail'] = $utilisateur->mail;
             $array['date_insc'] = $utilisateur->date_insc;
+            $array['token'] = $utilisateur->token;
         }
         $resp = Writer::jsonResponse($resp,200,['user' => $array]);
         return $resp;
@@ -45,6 +49,7 @@ class UserController
         $insert = $req->getParsedBody();
         //Hash le pwd d'un utilisateur
         $mdp = password_hash($insert['mdp'], PASSWORD_DEFAULT);
+        $token = AuthJWT::generateToken($insert['mail']);
         $user = array
         (
             'nom' => $insert['nom'],
@@ -54,7 +59,8 @@ class UserController
             'mail' => $insert['mail'],
             'mdp' => $mdp,
             'date_insc' => date("Y-m-d H:i:s"),
-            'ban_user' => false
+            'ban_user' => false,
+            "token" => $token
         );
         $create = $this->db->users->insertOne($user);
         $id = $create->getInsertedId();
@@ -66,19 +72,18 @@ class UserController
     public function updateUserProfile(Request $req, Response $resp, array $args){
         $update = $req->getParsedBody();
         $id = $args['id'];
-        //var_dump($update, $id);       
+
         $mdp = password_hash($update['mdp'], PASSWORD_DEFAULT);
-        $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
-        foreach($user as $utilisateur){
-            $utilisateur->nom = $update['nom'];
-            $utilisateur->prenom = $update['prenom'];
-            $utilisateur->mail = $update['mail'];
-            $utilisateur->tel = $update['tel'];
-            $utilisateur->mdp = $mdp;
-        }
-        var_dump($utilisateur);
-        $maj = $this->db->users->updateOne($utilisateur);
-        $resp = Writer::jsonResponse($resp,200,$utilisateur);
-        //return $resp;
+        
+        $updateResult = $this->db->users->updateOne(
+            ['_id' => new \MongoDB\BSON\ObjectId("$id")],
+            [ '$set' => [ 'nom' => $update['nom'], 'prenom' => $update['prenom'], 'mail' => $update['mail'],
+                        'tel' => $update['tel'], 'mdp' => $mdp ]]
+        );
+        printf("Matched %d document(s)\n", $updateResult->getMatchedCount());
+        printf("Modified %d document(s)\n", $updateResult->getModifiedCount());
+
+        $resp = Writer::jsonResponse($resp,200,"Profil mis à jours.");
+        return $resp;
     }
 }
