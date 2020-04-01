@@ -14,9 +14,6 @@ class PictureController{
 
   public function store(Request $request,Response $response){
 
-
-
-
     $input = $request->getParsedBody();
     $rawdata = $input["picture"];
     $rawdata = explode(',',$rawdata);
@@ -37,7 +34,7 @@ class PictureController{
   public function send(Request $request, Response $response)
   {
     $picture = $request->getAttribute("id");
-    $picture = file_get_contents($_SERVER['DOCUMENT_ROOT'] . "/uploads/" . $picture);
+    $picture = file_get_contents($_SERVER['DOCUMENT_ROOT'] . "../uploads/" . $picture);
     $picture = base64_encode($picture);
 
     $response = Writer::jsonResponse($response,200,[
@@ -47,4 +44,3 @@ class PictureController{
   }
 
 }
- ?>

@@ -13,18 +13,18 @@ class UserController
         $this->db = $container->get('db');
     }
 
-    public function getUsers(Request $req, Response $resp, array $args){
+    public function getUsers(Request $request, Response $response, array $args){
         $users = $this->db->users->find([]);
         foreach($users as $user){
             $array = array();
             $array['pseudo'] = $user->pseudo;
             $array['mail'] = $user->mail;
-            $resp = Writer::jsonResponse($resp,200,['users' => $array]);
+            $response = Writer::jsonResponse($response,200,['users' => $array]);
         }
-        return $resp;
+        return $response;
     }
 
-    public function getUser(Request $req, Response $resp, array $args){
+    public function getUser(Request $request, Response $response, array $args){
         $pseudo = $args['pseudo'];
         $user = $this->db->users->find(['pseudo' => $pseudo]);
         foreach($user as $utilisateur){
@@ -34,11 +34,11 @@ class UserController
             $array['mail'] = $utilisateur->mail;
             $array['date_insc'] = $utilisateur->date_insc;
         }
-        $resp = Writer::jsonResponse($resp,200,['user' => $array]);
-        return $resp;
+        $response = Writer::jsonResponse($response,200,['user' => $array]);
+        return $response;
     }
 
-    public function getUserEvents(Request $req, Response $resp, array $args){
+    public function getUserEvents(Request $request, Response $response, array $args){
         $id = $args['id'];
         //var_dump($id);
         $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
@@ -54,32 +54,8 @@ class UserController
 
         $event = $this->db->event->find(['users' => $arrayuser["event_token"]["name"]]);
 
-        $resp = Writer::jsonResponse($resp,200,['user' => $arrayuser]);
-        return $resp;
+        $response = Writer::jsonResponse($response,200,['user' => $arrayuser]);
+        return $response;
     }
 
-    public function insertUser(Request $req, Response $resp, array $args){
-        $insert = $req->getParsedBody();
-        //Hash le pwd d'un utilisateur
-        $mdp = password_hash($insert['mdp'], PASSWORD_DEFAULT);
-        //$date = new Date('d-m-Y', $insert["date_insc"]);
-        $user = array
-        (
-            'nom' => $insert['nom'],
-            'prenom' => $insert['prenom'],
-            'date_naiss' => $insert['date_naiss'],
-            'tel' => $insert['tel'],
-            'mail' => $insert['mail'],
-            'mdp' => $mdp,
-            'date_insc' => date("Y-m-d H:i:s"),
-            'ban_user' => false
-        );
-
-        $create = $this->db->users->insertOne($user);
-        $id = $create->getInsertedId();
-        $user['id'] = $id;
-        $response = Writer::jsonResponse($resp,201,$user);
-
-        return $resp;
-    }
 }

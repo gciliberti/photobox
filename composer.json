@@ -1,9 +1,10 @@
 {
     "require": {
         "slim/slim": "3.*",
-     "illuminate/database":"^6.0",
         "mongodb/mongodb": "^1.6",
-        "firebase/php-jwt": "^5.0"
+        "firebase/php-jwt": "^5.0",
+        "vlucas/phpdotenv": "^4.1",
+        "tuupola/slim-jwt-auth": "^3.4"
     },
     "autoload": {
        "psr-4" : {
