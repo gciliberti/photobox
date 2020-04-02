@@ -6,13 +6,12 @@ $dotenv->load();
 $mongoclient = new \MongoDB\Client(getenv("MONGO_URI"));
 $db = $mongoclient->photobox;
 
-$errors = require '../conf/errors.php';
+$settings = require_once "../conf/settings.php";
+$errorsHandlers = require_once "../conf/errorsHandlers.php";
+$app_config = array_merge($settings, $errorsHandlers);
 
-$configuration = new \Slim\Container(['settings' => ['displayErrorDetails' => true]]);
-
-$app_config = array_merge($errors);
-
-$app = new \Slim\App(new \Slim\Container($app_config,$configuration));
+$container = new \Slim\Container($app_config);
+$app = new \Slim\App($container);
 $c = $app->getContainer();
 $c['db'] = $db;
 

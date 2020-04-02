@@ -53,6 +53,8 @@ class AuthController
             } else {
                 $response = Writer::jsonResponse($response, 401, ["error" => "login mismatch"]);
             }
+        } else {
+            $response = Writer::jsonResponse($response, 401,["error"=> "login mismatch"]);
         }
 
         return $response;
