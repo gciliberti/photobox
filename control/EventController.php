@@ -59,10 +59,10 @@ class EventController
 
     }
 
-    public function getUserEvents(Request $request, Response $response, $args)
+    public function getPublicEvents(Request $request, Response $response, $args)
     {
-        $usermail = $request->getAttribute('mail');
-        $events = $this->db->event->find(['author' => $usermail]);
+        $events = $this->db->event->find(['public' => "true"]);
+        $evenements = array();
         foreach ($events as $event) {
             $arrayevent = array();
             $arrayevent['_id'] = (string)$event->_id;
@@ -76,7 +76,7 @@ class EventController
             $arrayevent['token'] = $event->token;
             $evenements[] = $arrayevent;
         }
-        $response = Writer::jsonResponse($response, 200, $evenements);
+        $response = Writer::jsonResponse($response, 200, (object)$evenements);
         return $response;
     }
 
@@ -103,12 +103,19 @@ class EventController
 
     public function joinPublicEvent(Request $request, Response $response, $args){
         $user = $request->getAttribute('token');
-        $eventtoken = $args["token"];
+        $eventtoken = $args["eventtoken"];
+        $mail = $user['mail'];
 
         if($event = $this->db->event->find(['token' => $eventtoken]))
         {
-            $event->members->$push;
+            $this->db->event->updateOne(
+                ["token"=>$eventtoken],
+                ['$push'=>['members'=>$mail]]
+            );
+            $response = Writer::jsonResponse($response, 200, ["success"=>"Join with success"]);
+            return $response;
         }
+
 
     }
 

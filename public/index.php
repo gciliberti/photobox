@@ -43,9 +43,9 @@ $app->post('/event', \photobox\control\EventController::class . ':create');
 
 $app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId');
 
-$app->get('/events',\photobox\control\EventController::class . ':getUserEvents');
+$app->get('/events',\photobox\control\EventController::class . ':getPublicEvents');
 
-$app->post('/event/join/{token}',\photobox\control\EventController::class . ':joinPublicEvent');
+$app->post('/event/join/{eventtoken}',\photobox\control\EventController::class . ':joinPublicEvent');
 
 $app->get('/events/involved',\photobox\control\EventController::class . ':getUserRegisteredEvents');
 
