@@ -82,8 +82,9 @@ class EventController
 
     public function getUserRegisteredEvents(Request $request, Response $response, $args)
     {
-        $usermail = $request->getAttribute('mail');
-        $events = $this->db->event->find(['members' => $usermail]);
+        $user = $request->getAttribute('token');
+        $events = $this->db->event->find(['members' => $user['mail']]);
+        $evenements = array();
         foreach ($events as $event) {
             $arrayevent = array();
             $arrayevent['_id'] = (string)$event->_id;
@@ -97,7 +98,7 @@ class EventController
             $arrayevent['token'] = $event->token;
             $evenements[] = $arrayevent;
         }
-        $response = Writer::jsonResponse($response, 200, $evenements);
+        $response = Writer::jsonResponse($response, 200, (object)$evenements);
         return $response;
     }
 
