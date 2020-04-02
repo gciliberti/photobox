@@ -15,6 +15,11 @@ $app = new \Slim\App($container);
 $c = $app->getContainer();
 $c['db'] = $db;
 
+$app->add(new Tuupola\Middleware\JwtAuthentication([
+    "ignore" => ["/login", "/register"],
+    "secret" => getenv("JWT_SECRET"),
+]));
+
 
 /*get tous les utilisateurs*/
 $app->get('/users[/]', \photobox\control\UserController::class . ':getUsers');
@@ -39,6 +44,8 @@ $app->post('/event', \photobox\control\EventController::class . ':create');
 $app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId');
 
 $app->get('/events',\photobox\control\EventController::class . ':getUserEvents');
+
+$app->post('/event/join/{token}',\photobox\control\EventController::class . ':joinPublicEvent');
 
 $app->get('/events/involved',\photobox\control\EventController::class . ':getUserRegisteredEvents');
 
