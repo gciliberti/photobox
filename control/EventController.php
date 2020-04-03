@@ -20,13 +20,13 @@ class EventController
         $user = $request->getAttribute('token');
         $input = $request->getParsedBody();
         $event = [
-            "author" => $user['mail'],
+            "author" => $user['id'],
             "name" => $input['name'],
             "date" => $input['date'],
             "location" => $input['location'],
             "public" => $input['public'],
             "description" => $input['description'],
-            "members" => array($user['mail']),
+            "members" => array($user['id']),
             "token" => Writer::generateToken(),
         ];
 
@@ -83,7 +83,7 @@ class EventController
     public function getUserRegisteredEvents(Request $request, Response $response, $args)
     {
         $user = $request->getAttribute('token');
-        $events = $this->db->event->find(['members' => $user['mail']]);
+        $events = $this->db->event->find(['members' => $user['id']]);
         $evenements = array();
         foreach ($events as $event) {
             $arrayevent = array();
@@ -105,13 +105,13 @@ class EventController
     public function joinPublicEvent(Request $request, Response $response, $args){
         $user = $request->getAttribute('token');
         $eventtoken = $args["eventtoken"];
-        $mail = $user['mail'];
+        $id = $user['id'];
 
         if($event = $this->db->event->find(['token' => $eventtoken]))
         {
             $this->db->event->updateOne(
                 ["token"=>$eventtoken],
-                ['$push'=>['members'=>$mail]]
+                ['$push'=>['members'=>$id]]
             );
             $response = Writer::jsonResponse($response, 200, ["success"=>"Join with success"]);
             return $response;
@@ -122,7 +122,7 @@ class EventController
 
     public function getEventCreated(Request $request, Response $response, $args){
         $user = $request->getAttribute('token');
-        $events = $this->db->event->find(['author' => $user['mail']]);
+        $events = $this->db->event->find(['author' => $user['id']]);
         $evenements = array();
         foreach ($events as $event) {
             $arrayevent = array();

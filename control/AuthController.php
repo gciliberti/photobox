@@ -34,7 +34,7 @@ class AuthController
                     "iss" => "https://apiphotobox.tallium.tech/",
                     "aud" => "https://apiphotobox.tallium.tech/",
                     "iat" => 1356999524,
-                    "mail" => $user->mail,
+                    "id" => (string)$user->_id,
                     "nbf" => 1357000000
                 ], getenv("JWT_SECRET"), 'HS512');
 
