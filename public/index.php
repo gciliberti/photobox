@@ -27,6 +27,8 @@ $app->get('/users[/]', \photobox\control\UserController::class . ':getUsers');
 /*Get un user en particulier*/
 $app->get('/user/{pseudo}[/]', \photobox\control\UserController::class . ':getUser');
 
+$app->put('/user[/]', \photobox\control\UserController::class . ':editProfile');
+
 /*get les évènements auxquels un user a participé*/
 $app->get('/users/{id}/{events}[/]', \photobox\control\UserController::class . ':getUserEvents');
 

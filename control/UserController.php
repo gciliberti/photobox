@@ -1,4 +1,5 @@
 <?php
+
 namespace photobox\control;
 
 use\Psr\Http\Message\ServerRequestInterface as Request;
@@ -9,40 +10,44 @@ class UserController
 {
     protected $db;
 
-    public function __construct($container){
+    public function __construct($container)
+    {
         $this->db = $container->get('db');
     }
 
-    public function getUsers(Request $request, Response $response, array $args){
+    public function getUsers(Request $request, Response $response, array $args)
+    {
         $users = $this->db->users->find([]);
-        foreach($users as $user){
+        foreach ($users as $user) {
             $array = array();
             $array['pseudo'] = $user->pseudo;
             $array['mail'] = $user->mail;
-            $response = Writer::jsonResponse($response,200,['users' => $array]);
+            $response = Writer::jsonResponse($response, 200, ['users' => $array]);
         }
         return $response;
     }
 
-    public function getUser(Request $request, Response $response, array $args){
+    public function getUser(Request $request, Response $response, array $args)
+    {
         $pseudo = $args['pseudo'];
         $user = $this->db->users->find(['pseudo' => $pseudo]);
-        foreach($user as $utilisateur){
+        foreach ($user as $utilisateur) {
             $array = array();
             $array['id'] = $utilisateur->_id;
             $array['pseudo'] = $utilisateur->pseudo;
             $array['mail'] = $utilisateur->mail;
             $array['date_insc'] = $utilisateur->date_insc;
         }
-        $response = Writer::jsonResponse($response,200,['user' => $array]);
+        $response = Writer::jsonResponse($response, 200, ['user' => $array]);
         return $response;
     }
 
-    public function getUserEvents(Request $request, Response $response, array $args){
+    public function getUserEvents(Request $request, Response $response, array $args)
+    {
         $id = $args['id'];
         //var_dump($id);
         $user = $this->db->users->find(['_id' => new \MongoDB\BSON\ObjectId("$id")]);
-        foreach($user as $oneuser){
+        foreach ($user as $oneuser) {
             $arrayuser = array();
             $arrayuser['_id'] = (string)$oneuser->_id;
             $arrayuser['pseudo'] = $oneuser->pseudo;
@@ -54,15 +59,28 @@ class UserController
 
         $event = $this->db->event->find(['users' => $arrayuser["event_token"]["name"]]);
 
-        $response = Writer::jsonResponse($response,200,['user' => $arrayuser]);
+        $response = Writer::jsonResponse($response, 200, ['user' => $arrayuser]);
         return $response;
     }
 
-    public function editProfile(Request $request, Response $response, $args){
+    public function editProfile(Request $request, Response $response, $args)
+    {
         $usertoken = $request->getAttribute('token');
         $input = $request->getParsedBody();
 
-        $user = $this->db->users->find(['mail'=> $usertoken['token']]);
+        if ($user = $this->db->users->find(['_id' => $usertoken['id']])) {
+            $this->db->users->updateOne(
+                ["_id" => new \MongoDB\BSON\ObjectId($usertoken['id'])],
+                ['$set' =>
+                    [
+                        'tel' => $input['tel'],
+                        'mail' => $input['mail']
+                    ]
+                ]
+            );
+            return $response = Writer::jsonResponse($response, 200, ['success' =>$usertoken['id']]);
+        }
+        return $response = Writer::jsonResponse($response, 500, ['error' => "internal server error"]);
     }
 
 }
