@@ -78,7 +78,7 @@ class UserController
                     ]
                 ]
             );
-            return $response = Writer::jsonResponse($response, 200, ['success' =>$usertoken['id']]);
+            return $response = Writer::jsonResponse($response, 200, ['success' => "user updated"]);
         }
         return $response = Writer::jsonResponse($response, 500, ['error' => "internal server error"]);
     }
