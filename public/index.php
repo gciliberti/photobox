@@ -49,6 +49,8 @@ $app->post('/event/join/{eventtoken}',\photobox\control\EventController::class .
 
 $app->get('/events/involved',\photobox\control\EventController::class . ':getUserRegisteredEvents');
 
+$app->get('/events/created',\photobox\control\EventController::class . ':getEventCreated');
+
 $app->post('/login', \photobox\control\AuthController::class . ':login');
 
 $app->run();

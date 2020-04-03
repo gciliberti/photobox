@@ -116,8 +116,29 @@ class EventController
             $response = Writer::jsonResponse($response, 200, ["success"=>"Join with success"]);
             return $response;
         }
+        return $response = Writer::jsonResponse($response, 500, ["error"=>"internal error"]);
 
+    }
 
+    public function getEventCreated(Request $request, Response $response, $args){
+        $user = $request->getAttribute('token');
+        $events = $this->db->event->find(['author' => $user['mail']]);
+        $evenements = array();
+        foreach ($events as $event) {
+            $arrayevent = array();
+            $arrayevent['_id'] = (string)$event->_id;
+            $arrayevent['author'] = $event->author;
+            $arrayevent['name'] = $event->name;
+            $arrayevent['date'] = $event->date;
+            $arrayevent['location'] = $event->location;
+            $arrayevent['public'] = $event->public;
+            $arrayevent['description'] = $event->description;
+            $arrayevent['members'] = $event->members;
+            $arrayevent['token'] = $event->token;
+            $evenements[] = $arrayevent;
+        }
+        $response = Writer::jsonResponse($response, 200, (object)$evenements);
+        return $response;
     }
 
 

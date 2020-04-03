@@ -58,4 +58,11 @@ class UserController
         return $response;
     }
 
+    public function editProfile(Request $request, Response $response, $args){
+        $usertoken = $request->getAttribute('token');
+        $input = $request->getParsedBody();
+
+        $user = $this->db->users->find(['mail'=> $usertoken['token']]);
+    }
+
 }
