@@ -35,11 +35,11 @@ $app->get('/users/{id}/{events}[/]', \photobox\control\UserController::class . '
 /*ajoute un nouveau user*/
 $app->post('/register[/]', \photobox\control\AuthController::class . ':register');
 
-//Ajouter une image (depuis un string b64)
-$app->post('/picture', \photobox\control\PictureController::class . ':store');
 
 //Get une image avec son ID
 $app->get('/picture/{id}', \photobox\control\PictureController::class . ':send');
+
+$app->post('/picture/event/{eventtoken}', \photobox\control\PictureController::class . ':store');
 
 $app->post('/event', \photobox\control\EventController::class . ':create');
 
