@@ -52,4 +52,32 @@ class PictureController
         return $response;
     }
 
+    public function getEventPictures(Request $request, Response $response, $args)
+    {
+        if ($event = $this->db->event->findOne(["token" => $args['eventtoken']])) {
+            $pictures = array();
+            foreach($event->pictures as $picture){
+                array_push($pictures,["id"=>$picture, "URI"=>"afaire"]);
+            }
+            $responsearray["pictures"]=$pictures;
+            $response = Writer::jsonResponse($response, 200,$responsearray);
+            return $response;
+        }
+    }
+
+    public function pictureUri(Request $request, Response $response, $args){
+        try{
+            $event = $this->db->event->findOne(["token"=>$args["event_token"]]);
+            $id = (string) $event->_id;
+            $img = file_get_contents("../uploads/".$id.'/'.$args['photo_id']);
+            $response = $response->withStatus(200)->withHeader("Content-Type", "image/png");
+            echo $img;
+            return $response;
+
+        } catch (\Exception $e){
+            $response = Writer::jsonResponse($response, 404,var_dump($e));
+            return $response;
+        }
+    }
+
 }

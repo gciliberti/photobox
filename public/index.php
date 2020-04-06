@@ -1,4 +1,7 @@
 <?php
+
+use\Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
 require '../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable("../");
 $dotenv->load();
@@ -16,7 +19,7 @@ $c = $app->getContainer();
 $c['db'] = $db;
 
 $app->add(new Tuupola\Middleware\JwtAuthentication([
-    "ignore" => ["/login", "/register"],
+    "ignore" => ["/login", "/register","/event/pictures","/assets/event/"],
     "secret" => getenv("JWT_SECRET"),
 ]));
 
@@ -39,9 +42,13 @@ $app->post('/register[/]', \photobox\control\AuthController::class . ':register'
 //Get une image avec son ID
 $app->get('/picture/{id}', \photobox\control\PictureController::class . ':send');
 
+$app->get('/assets/event/{event_token}/{photo_id}', \photobox\control\PictureController::class . ':pictureUri');
+
 $app->post('/picture/event/{eventtoken}', \photobox\control\PictureController::class . ':store');
 
 $app->post('/event', \photobox\control\EventController::class . ':create');
+
+$app->get('/event/pictures/{eventtoken}', \photobox\control\PictureController::class . ':getEventPictures');
 
 $app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId');
 
