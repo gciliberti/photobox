@@ -27,6 +27,7 @@ class EventController
             "public" => $input['public'],
             "description" => $input['description'],
             "members" => array($user['id']),
+            "status"=> "upcoming",
             "token" => Writer::generateToken(),
         ];
 
