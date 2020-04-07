@@ -57,7 +57,7 @@ class PictureController
         if ($event = $this->db->event->findOne(["token" => $args['eventtoken']])) {
             $pictures = array();
             foreach($event->pictures as $picture){
-                array_push($pictures,["id"=>$picture, "URI"=>"afaire"]);
+                array_push($pictures,["id"=>$picture, "URI"=>"/assets/event/".$args['eventtoken'].'/'.$picture]);
             }
             $responsearray["pictures"]=$pictures;
             $response = Writer::jsonResponse($response, 200,$responsearray);
@@ -69,13 +69,18 @@ class PictureController
         try{
             $event = $this->db->event->findOne(["token"=>$args["event_token"]]);
             $id = (string) $event->_id;
-            $img = file_get_contents("../uploads/".$id.'/'.$args['photo_id']);
-            $response = $response->withStatus(200)->withHeader("Content-Type", "image/png");
-            echo $img;
-            return $response;
+            if(file_exists("../uploads/".$id.'/'.$args['photo_id'])){
+                $img = file_get_contents("../uploads/".$id.'/'.$args['photo_id']);
+                $response = $response->withStatus(200)->withHeader("Content-Type", "image/png");
+                echo $img;
+                return $response;
+            } else {
+                throw new \Exception('Introuvable');
+            }
+
 
         } catch (\Exception $e){
-            $response = Writer::jsonResponse($response, 404,var_dump($e));
+            $response = Writer::jsonResponse($response, 404,["error"=>"picture not found"]);
             return $response;
         }
     }
