@@ -84,5 +84,16 @@ class PictureController
             return $response;
         }
     }
+    public function getEventLastPicture(Request $request, Response $response, $args)
+    {
+        if ($event = $this->db->event->findOne(["token" => $args['eventtoken']])) {
+            $pictures = array();
+            $picture = end($event->pictures);
+            array_push($pictures,["id"=>$picture, "URI"=>"/assets/event/".$args['eventtoken'].'/'.$picture]);
+            $responsearray["pictures"]=$pictures;
+            $response = Writer::jsonResponse($response, 200,$responsearray);
+            return $response;
+        }
+    }
 
 }

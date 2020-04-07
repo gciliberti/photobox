@@ -50,6 +50,8 @@ $app->post('/event', \photobox\control\EventController::class . ':create');
 
 $app->get('/event/pictures/{eventtoken}', \photobox\control\PictureController::class . ':getEventPictures');
 
+$app->get('/event/picture/last/{eventtoken}', \photobox\control\PictureController::class . ':getEventLastPicture');
+
 $app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId');
 
 $app->get('/events',\photobox\control\EventController::class . ':getPublicEvents');
