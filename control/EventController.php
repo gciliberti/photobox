@@ -33,6 +33,10 @@ class EventController
             "token" => Writer::generateToken(),
         ];
 
+        if($event['public']==false){
+            $event['eventpass']=$playerpass = bin2hex(random_bytes(4));
+        }
+
         $insert = $this->db->event->insertOne($event);
         $id = $insert->getInsertedId();
         $event['id'] = (string)$id;
