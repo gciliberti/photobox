@@ -56,12 +56,18 @@ class PictureController
     {
         if ($event = $this->db->event->findOne(["token" => $args['eventtoken']])) {
             $pictures = array();
-            foreach($event->pictures as $picture){
-                array_push($pictures,["id"=>$picture, "URI"=>"/assets/event/".$args['eventtoken'].'/'.$picture]);
+            if($event->pictures){
+                foreach($event->pictures as $picture){
+                    array_push($pictures,["id"=>$picture, "URI"=>"/assets/event/".$args['eventtoken'].'/'.$picture]);
+                }
+                $responsearray["pictures"]=$pictures;
+                $response = Writer::jsonResponse($response, 200,$responsearray);
+                return $response;
+            } else {
+                $response = Writer::jsonResponse($response, 404,["error" => "no pictures found"]);
+                return $response;
             }
-            $responsearray["pictures"]=$pictures;
-            $response = Writer::jsonResponse($response, 200,$responsearray);
-            return $response;
+
         }
     }
 
