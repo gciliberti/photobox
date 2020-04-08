@@ -27,7 +27,7 @@ class EventController
             "public" => $input['public'],
             "description" => $input['description'],
             "members" => array($user['id']),
-            "status"=> "upcoming",
+            "status"=> "prochainement",
             "token" => Writer::generateToken(),
         ];
 
@@ -144,7 +144,7 @@ class EventController
 
     public function getHistory(Request $request, Response $response, $args){
         $user = $request->getAttribute('token');
-        $events = $this->db->event->find(['status' => "finished","members"=>$user['id']]);
+        $events = $this->db->event->find(['status' => "fini","members"=>$user['id']]);
         $evenements = array();
         foreach ($events as $event) {
             $arrayevent = array();
