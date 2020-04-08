@@ -19,6 +19,7 @@ class EventController
     {
         $user = $request->getAttribute('token');
         $input = $request->getParsedBody();
+        $playerpass = bin2hex(random_bytes(4));
         $event = [
             "author" => $user['id'],
             "name" => $input['name'],
@@ -28,6 +29,7 @@ class EventController
             "description" => $input['description'],
             "members" => array($user['id']),
             "status"=> "prochainement",
+            "playerpass"=> $playerpass,
             "token" => Writer::generateToken(),
         ];
 

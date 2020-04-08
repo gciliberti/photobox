@@ -19,7 +19,7 @@ $c = $app->getContainer();
 $c['db'] = $db;
 
 $app->add(new Tuupola\Middleware\JwtAuthentication([
-    "ignore" => ["/login", "/register","/event/pictures","/assets/event/"],
+    "ignore" => ["/login", "/register","/event/pictures","/assets/event/","/player","/event/picture/last"],
     "secret" => getenv("JWT_SECRET"),
 ]));
 
@@ -80,6 +80,8 @@ $app->get('/events/involved',\photobox\control\EventController::class . ':getUse
 $app->get('/events/created',\photobox\control\EventController::class . ':getEventCreated');
 
 $app->post('/login', \photobox\control\AuthController::class . ':login');
+
+$app->post('/player/auth', \photobox\control\PlayerController::class . ':eventAuth');
 
 $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
     $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
