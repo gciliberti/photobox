@@ -19,7 +19,7 @@ $c = $app->getContainer();
 $c['db'] = $db;
 
 $app->add(new Tuupola\Middleware\JwtAuthentication([
-    "ignore" => ["/login", "/register","/event/pictures","/assets/event/"],
+    "ignore" => ["/login", "/register","/event/pictures","/assets/event/","/player","/event/picture/last"],
     "secret" => getenv("JWT_SECRET"),
 ]));
 
@@ -30,7 +30,7 @@ $app->options('/{routes:.+}', function ($request, $response, $args) {
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
-        ->withHeader('Access-Control-Allow-Origin', 'https://apiphotobox.tallium.tech/')
+        ->withHeader('Access-Control-Allow-Origin', '*')
         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
@@ -84,6 +84,8 @@ $app->get('/events/involved',\photobox\control\EventController::class . ':getUse
 $app->get('/events/created',\photobox\control\EventController::class . ':getEventCreated');
 
 $app->post('/login', \photobox\control\AuthController::class . ':login');
+
+$app->post('/player/auth', \photobox\control\PlayerController::class . ':eventAuth');
 
 $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
     $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
