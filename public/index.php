@@ -52,6 +52,8 @@ $app->get('/event/pictures/{eventtoken}', \photobox\control\PictureController::c
 
 $app->get('/event/picture/last/{eventtoken}', \photobox\control\PictureController::class . ':getEventLastPicture');
 
+$app->get('/events/history[/]', \photobox\control\EventController::class . ':getHistory');
+
 $app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwithId');
 
 $app->get('/events',\photobox\control\EventController::class . ':getPublicEvents');

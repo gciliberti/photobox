@@ -142,6 +142,28 @@ class EventController
         return $response;
     }
 
+    public function getHistory(Request $request, Response $response, $args){
+        $user = $request->getAttribute('token');
+        $events = $this->db->event->find(['status' => "finished","members"=>$user['id']]);
+        $evenements = array();
+        foreach ($events as $event) {
+            $arrayevent = array();
+            $arrayevent['_id'] = (string)$event->_id;
+            $arrayevent['author'] = $event->author;
+            $arrayevent['name'] = $event->name;
+            $arrayevent['date'] = $event->date;
+            $arrayevent['location'] = $event->location;
+            $arrayevent['public'] = $event->public;
+            $arrayevent['description'] = $event->description;
+            $arrayevent['members'] = $event->members;
+            $arrayevent['token'] = $event->token;
+            $arrayevent['status'] = $event->status;
+            $evenements[] = $arrayevent;
+        }
+        $response = Writer::jsonResponse($response, 200, (object)$evenements);
+        return $response;
+    }
+
 
 }
 
