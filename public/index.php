@@ -73,7 +73,9 @@ $app->get('/event/{id}', \photobox\control\EventController::class . ':getEventwi
 
 $app->get('/events',\photobox\control\EventController::class . ':getPublicEvents');
 
-$app->post('/event/join/{eventtoken}',\photobox\control\EventController::class . ':joinPublicEvent');
+$app->post('/event/join/public/{eventtoken}',\photobox\control\EventController::class . ':joinPublicEvent');
+
+$app->post('/event/join/private[/]', \photobox\control\EventController::class . ':joinPrivateEvent');
 
 $app->get('/events/involved',\photobox\control\EventController::class . ':getUserRegisteredEvents');
 

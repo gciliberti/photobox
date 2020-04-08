@@ -147,6 +147,23 @@ class EventController
 
     }
 
+    public function joinPrivateEvent(Request $request, Response $response){
+        $input = $request->getParsedBody();
+        $user = $request->getAttribute('token');
+        $id = $user['id'];
+
+        if($event = $this->db->event->find(['eventpass' => $input['eventpass']]))
+        {
+            $this->db->event->updateOne(
+                ["eventpass"=>$input['eventpass']],
+                ['$push'=>['members'=>$id]]
+            );
+            $response = Writer::jsonResponse($response, 200, ["success"=>"Join with success"]);
+            return $response;
+        }
+        return $response = Writer::jsonResponse($response, 500, ["error"=>"internal error"]);
+    }
+
     public function getEventCreated(Request $request, Response $response, $args){
         $user = $request->getAttribute('token');
         $events = $this->db->event->find(['author' => $user['id']]);
