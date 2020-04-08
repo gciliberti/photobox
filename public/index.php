@@ -59,6 +59,15 @@ $app->get('/assets/event/{event_token}/{photo_id}', \photobox\control\PictureCon
 
 $app->post('/picture/event/{eventtoken}', \photobox\control\PictureController::class . ':store');
 
+//ajouter un commentaire dans un event
+$app->post('/event/comment/{eventtoken}', \photobox\control\CommentController::class . ':addCommentEvent');
+
+//Recupere le dernier commentaire d'un event
+$app->get('/event/comment/last/{eventtoken}', \photobox\control\CommentController::class . ':getEventLastComment');
+
+//Recupere tous les commentaires d'un event
+$app->get('/event/comment/{eventtoken}', \photobox\control\CommentController::class . ':getEventComments');
+
 $app->post('/event', \photobox\control\EventController::class . ':create');
 
 //Supprime un event via son token
