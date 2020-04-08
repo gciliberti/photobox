@@ -61,7 +61,11 @@ $app->post('/picture/event/{eventtoken}', \photobox\control\PictureController::c
 
 $app->post('/event', \photobox\control\EventController::class . ':create');
 
+//Supprime un event via son token
 $app->delete('/event/{eventToken}', \photobox\control\EventController::class . ':deleteEvent');
+
+//Update un event via son token
+$app->put('/event/{eventToken}', \photobox\control\EventController::class . ':updateEvent');
 
 $app->get('/event/pictures/{eventtoken}', \photobox\control\PictureController::class . ':getEventPictures');
 

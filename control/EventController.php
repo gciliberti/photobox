@@ -55,13 +55,62 @@ class EventController
             $event = $this->db->event->deleteOne(['token'=>$eventToken]);
             $response = Writer::jsonResponse($response, 204, $event);
         }else{
-            $response->getBody()->write(json_encode([
+            $resp = [
                 "type" => "erreur",
                 "error" => 401,
                 "message" => "unauthorized"
-            ]));
+            ];
+            $response = Writer::jsonResponse($response, 401, $resp);
         }
 
+        return $response;
+    }
+
+    public function updateEvent(Request $request, Response $response)
+    {
+        $input = $request->getParsedBody();
+        if(isset($input['name']) && isset($input['date']) && isset($input['location']) && isset($input['description'])){
+            $user = $request->getAttribute('token');
+            $userId= $user['id'];
+            $eventToken = $request->getAttribute('eventToken');
+            $isOwner = $this->db->event->findOne(['author' => $userId,'token' => $eventToken]);
+            if(isset($isOwner)){// si l'user est bien le proprietaire on modifie l'event
+                $event = [
+                    "name" => $input['name'],
+                    "date" => $input['date'],
+                    "location" => $input['location'],
+                    "description" => $input['description'],
+                ];
+                $this->db->event->updateOne(["author" => $userId,"token" => $eventToken],['$set'=> $event]);
+
+                $UpdatedEvent = $this->db->event->findOne(["author" => $userId,"token" => $eventToken]);
+                $eventarray = [
+                    "id" => (string)$UpdatedEvent->_id,
+                    "name" => $UpdatedEvent->name,
+                    "date" => $UpdatedEvent->date,
+                    "location" => $UpdatedEvent->location,
+                    "public" => $UpdatedEvent->public,
+                    "description" => $UpdatedEvent->description,
+                    "token" => $UpdatedEvent->token,
+                ];
+                $response = Writer::jsonResponse($response, 201, $eventarray);
+            }else{
+                $resp = [
+                    "type" => "erreur",
+                    "error" => 401,
+                    "message" => "unauthorized"
+                ];
+                $response = Writer::jsonResponse($response, 401, $resp);
+
+            }
+        }else{
+            $resp = [
+                "type" => "erreur",
+                "error" => 400,
+                "message" => "Les paramètres ne correspondent pas"
+            ];
+            $response = Writer::jsonResponse($response, 401, $resp);
+        }
         return $response;
     }
 
