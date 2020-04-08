@@ -61,6 +61,8 @@ $app->post('/picture/event/{eventtoken}', \photobox\control\PictureController::c
 
 $app->post('/event', \photobox\control\EventController::class . ':create');
 
+$app->delete('/event/{eventToken}', \photobox\control\EventController::class . ':deleteEvent');
+
 $app->get('/event/pictures/{eventtoken}', \photobox\control\PictureController::class . ':getEventPictures');
 
 $app->get('/event/picture/last/{eventtoken}', \photobox\control\PictureController::class . ':getEventLastPicture');

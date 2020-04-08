@@ -21,7 +21,7 @@ return $tab = ["notAllowedHandler"=>
                 $resp->getBody()->write( 'error :' .$e->getMessage() )
                     ->write( 'file : ' . $e->getFile() )
                     ->write( 'line : ' . $e->getLine() ) ;
-                return$resp ;
+                return $resp ;
         };
     },"notFoundHandler"=>
     $c['notFoundHandler']= function( $c ) {

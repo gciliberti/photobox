@@ -39,6 +39,26 @@ class EventController
         return $response;
     }
 
+    public function deleteEvent(Request $request, Response $response)
+    {
+        $user = $request->getAttribute('token');
+        $userId= $user['id'];
+        $eventToken = $request->getAttribute('eventToken');
+        $isOwner = $this->db->event->findOne(['author' => $userId,'token' => $eventToken]);
+        if(isset($isOwner)){// si l'user est bien le proprietaire on supprime l'event
+            $event = $this->db->event->deleteOne(['token'=>$eventToken]);
+            $response = Writer::jsonResponse($response, 204, $event);
+        }else{
+            $response->getBody()->write(json_encode([
+                "type" => "erreur",
+                "error" => 401,
+                "message" => "unauthorized"
+            ]));
+        }
+
+        return $response;
+    }
+
     public function getEventwithId(Request $request, Response $response, $args)
     {
         $event_id = $request->getAttribute('id');
