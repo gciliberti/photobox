@@ -20,7 +20,7 @@ return [
         ],
         'postEventValidator'=>[
             'name'=>Validator::alpha("é à è ù ô î â ï ë ö ü")->length(1,120),
-            'date'=>Validator::regex('^([1-9]|([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$'),
+            'date'=>Validator::regex('/^([1-9]|([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$/'),
             'location'=>Validator::stringType()->length(5,200),
             'is_public'=>Validator::boolType(),
             'description'=>Validator::stringType()->length(5,250),
@@ -28,7 +28,7 @@ return [
         'putEventValidator'=>[
             'name'=>Validator::alpha("é à è ù ô î â ï ë ö ü")->length(1,120),
             'location'=>Validator::stringType()->length(5,200),
-            'date'=>Validator::regex('^([1-9]|([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$'),
+            'date'=>Validator::regex('/^([1-9]|([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$/'),
             'description'=>Validator::stringType()->length(5,250),
         ],
         'postJoinPrivateEvent'=>[
