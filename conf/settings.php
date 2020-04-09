@@ -35,7 +35,7 @@ return [
             'eventpass'=>Validator::alpha()->length(8,8),
         ],
         'playerAuth'=>[
-            'pass'=>Validator::alpha()->length(8,8),
+            'pass'=>Validator::alnum()->length(8,8),
         ]
     ]
 ];
