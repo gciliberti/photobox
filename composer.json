@@ -4,7 +4,8 @@
         "mongodb/mongodb": "^1.6",
         "firebase/php-jwt": "^5.0",
         "vlucas/phpdotenv": "^4.1",
-        "tuupola/slim-jwt-auth": "^3.4"
+        "tuupola/slim-jwt-auth": "^3.4",
+        "davidepastore/slim-validation": "^0.5.1"
     },
     "autoload": {
        "psr-4" : {

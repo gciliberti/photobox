@@ -25,7 +25,7 @@ class EventController
             "name" => $input['name'],
             "date" => $input['date'],
             "location" => $input['location'],
-            "public" => $input['public'],
+            "is_public" => $input['is_public'],
             "description" => $input['description'],
             "members" => array($user['id']),
             "status"=> "prochainement",
@@ -33,7 +33,7 @@ class EventController
             "token" => Writer::generateToken(),
         ];
 
-        if($event['public']==false){
+        if($event['is_public']==false){
             $event['eventpass']=$playerpass = bin2hex(random_bytes(4));
         }
 
@@ -89,7 +89,7 @@ class EventController
                     "name" => $UpdatedEvent->name,
                     "date" => $UpdatedEvent->date,
                     "location" => $UpdatedEvent->location,
-                    "public" => $UpdatedEvent->public,
+                    "is_public" => $UpdatedEvent->is_public,
                     "description" => $UpdatedEvent->description,
                     "token" => $UpdatedEvent->token,
                 ];
@@ -125,7 +125,7 @@ class EventController
             "name" => $event->name,
             "date" => $event->date,
             "location" => $event->location,
-            "public" => $event->public,
+            "is_public" => $event->is_public,
             "description" => $event->description,
             "token" => $event->token,
         ];
@@ -137,7 +137,7 @@ class EventController
 
     public function getPublicEvents(Request $request, Response $response, $args)
     {
-        $events = $this->db->event->find(['public' => "true"]);
+        $events = $this->db->event->find(['is_public' => true]);
         $evenements = array();
         foreach ($events as $event) {
             $arrayevent = array();
@@ -146,7 +146,7 @@ class EventController
             $arrayevent['name'] = $event->name;
             $arrayevent['date'] = $event->date;
             $arrayevent['location'] = $event->location;
-            $arrayevent['public'] = $event->public;
+            $arrayevent['is_public'] = $event->is_public;
             $arrayevent['description'] = $event->description;
             $arrayevent['members'] = $event->members;
             $arrayevent['token'] = $event->token;
@@ -168,7 +168,7 @@ class EventController
             $arrayevent['name'] = $event->name;
             $arrayevent['date'] = $event->date;
             $arrayevent['location'] = $event->location;
-            $arrayevent['public'] = $event->public;
+            $arrayevent['is_public'] = $event->is_public;
             $arrayevent['description'] = $event->description;
             $arrayevent['members'] = $event->members;
             $arrayevent['token'] = $event->token;
@@ -224,7 +224,7 @@ class EventController
             $arrayevent['name'] = $event->name;
             $arrayevent['date'] = $event->date;
             $arrayevent['location'] = $event->location;
-            $arrayevent['public'] = $event->public;
+            $arrayevent['is_public'] = $event->is_public;
             $arrayevent['description'] = $event->description;
             $arrayevent['members'] = $event->members;
             $arrayevent['token'] = $event->token;
@@ -245,7 +245,7 @@ class EventController
             $arrayevent['name'] = $event->name;
             $arrayevent['date'] = $event->date;
             $arrayevent['location'] = $event->location;
-            $arrayevent['public'] = $event->public;
+            $arrayevent['is_public'] = $event->is_public;
             $arrayevent['description'] = $event->description;
             $arrayevent['members'] = $event->members;
             $arrayevent['token'] = $event->token;
