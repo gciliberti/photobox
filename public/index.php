@@ -79,11 +79,11 @@ $app->post('/event', \photobox\control\EventController::class . ':create')
     ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
     ->add(new Validation($container->settings['postEventValidator']));
     
-$app->get('/player/event/comment/last/{eventtoken}', \photobox\control\PlayerController::class . ':getPlayerEventLastComment');
+$app->get('/player/event/comment/last/{eventtoken}', \photobox\control\CommentController::class . ':getPlayerEventLastComment');
 //Recupere le dernier commentaire d'un event
 
 //Recupere tous les commentaires d'un event
-$app->get('/player/event/comment/{eventtoken}', \photobox\control\PlayerController::class . ':getPlayerEventComments');
+$app->get('/player/event/comment/{eventtoken}', \photobox\control\CommentController::class . ':getPlayerEventComments');
 
 //Supprime un event via son token
 $app->delete('/event/{eventToken}', \photobox\control\EventController::class . ':deleteEvent');
