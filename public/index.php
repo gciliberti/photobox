@@ -20,7 +20,7 @@ $c = $app->getContainer();
 $c['db'] = $db;
 
 $app->add(new Tuupola\Middleware\JwtAuthentication([
-    "ignore" => ["/login", "/register","/event/pictures","/assets/event/","/player","/event/picture/last"],
+    "ignore" => ["/login", "/register","/event/pictures","/assets/event/","/player","/event/picture/last","/player/event/comment/","/player/event/comment/last"],
     "secret" => getenv("JWT_SECRET"),
 ]));
 
@@ -78,6 +78,12 @@ $app->get('/event/comment/{eventtoken}', \photobox\control\CommentController::cl
 $app->post('/event', \photobox\control\EventController::class . ':create')
     ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
     ->add(new Validation($container->settings['postEventValidator']));
+    
+$app->get('/player/event/comment/last/{eventtoken}', \photobox\control\PlayerController::class . ':getPlayerEventLastComment');
+//Recupere le dernier commentaire d'un event
+
+//Recupere tous les commentaires d'un event
+$app->get('/player/event/comment/{eventtoken}', \photobox\control\PlayerController::class . ':getPlayerEventComments');
 
 //Supprime un event via son token
 $app->delete('/event/{eventToken}', \photobox\control\EventController::class . ':deleteEvent');
