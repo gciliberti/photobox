@@ -137,7 +137,7 @@ class EventController
 
     public function getPublicEvents(Request $request, Response $response, $args)
     {
-        $events = $this->db->event->find(['is_public' => "true"]);
+        $events = $this->db->event->find(['is_public' => true]);
         $evenements = array();
         foreach ($events as $event) {
             $arrayevent = array();
