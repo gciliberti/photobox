@@ -100,4 +100,25 @@ class CommentController
         return $response;
     }
 
+    public function getPlayerEventLastComment(Request $request, Response $response)
+    {
+        $eventToken = $request->getAttribute('eventtoken');
+            $rep = $this->db->event->findOne(["token"=> $eventToken], ['projection' => ['comments' => 1]]); //on recupere le dernier comment
+            $lastcomment = end($rep->comments);
+            $response = Writer::jsonResponse($response, 200, $lastcomment);
+
+        return $response;
+    }
+
+    public function getPlayerEventComments(Request $request, Response $response)
+    {
+        $eventToken = $request->getAttribute('eventtoken');
+            $comments = $this->db->event->findOne(["token"=> $eventToken], ['projection' => ['comments' => 1]]); //on recupere le dernier comment
+            $rep = $comments->comments;
+            $response = Writer::jsonResponse($response, 200, $rep);
+
+
+        return $response;
+    }
+
 }

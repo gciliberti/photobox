@@ -19,7 +19,7 @@ $c = $app->getContainer();
 $c['db'] = $db;
 
 $app->add(new Tuupola\Middleware\JwtAuthentication([
-    "ignore" => ["/login", "/register","/event/pictures","/assets/event/","/player","/event/picture/last"],
+    "ignore" => ["/login", "/register","/event/pictures","/assets/event/","/player","/event/picture/last","/player/event/comment/","/player/event/comment/last"],
     "secret" => getenv("JWT_SECRET"),
 ]));
 
@@ -67,6 +67,13 @@ $app->get('/event/comment/last/{eventtoken}', \photobox\control\CommentControlle
 
 //Recupere tous les commentaires d'un event
 $app->get('/event/comment/{eventtoken}', \photobox\control\CommentController::class . ':getEventComments');
+
+//Recupere le dernier commentaire d'un event
+$app->get('/player/event/comment/last/{eventtoken}', \photobox\control\PlayerController::class . ':getPlayerEventLastComment');
+
+//Recupere tous les commentaires d'un event
+$app->get('/player/event/comment/{eventtoken}', \photobox\control\PlayerController::class . ':getPlayerEventComments');
+
 
 $app->post('/event', \photobox\control\EventController::class . ':create');
 
