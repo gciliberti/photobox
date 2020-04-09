@@ -2,6 +2,7 @@
 
 use\Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use DavidePastore\Slim\Validation\Validation;
 require '../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable("../");
 $dotenv->load();
@@ -49,7 +50,9 @@ $app->put('/user[/]', \photobox\control\UserController::class . ':editProfile');
 $app->get('/users/{id}/{events}[/]', \photobox\control\UserController::class . ':getUserEvents');
 
 /*ajoute un nouveau user*/
-$app->post('/register[/]', \photobox\control\AuthController::class . ':register');
+$app->post('/register[/]', \photobox\control\AuthController::class . ':register')
+    ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
+    ->add(new Validation($container->settings['registerValidator']));
 
 
 //Get une image avec son ID
@@ -57,10 +60,14 @@ $app->get('/picture/{id}', \photobox\control\PictureController::class . ':send')
 
 $app->get('/assets/event/{event_token}/{photo_id}', \photobox\control\PictureController::class . ':pictureUri');
 
-$app->post('/picture/event/{eventtoken}', \photobox\control\PictureController::class . ':store');
+$app->post('/picture/event/{eventtoken}', \photobox\control\PictureController::class . ':store')
+    ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
+    ->add(new Validation($container->settings['postPictureEventValidator']));
 
 //ajouter un commentaire dans un event
-$app->post('/event/comment/{eventtoken}', \photobox\control\CommentController::class . ':addCommentEvent');
+$app->post('/event/comment/{eventtoken}', \photobox\control\CommentController::class . ':addCommentEvent')
+    ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
+    ->add(new Validation($container->settings['postCommentValidator']));
 
 //Recupere le dernier commentaire d'un event
 $app->get('/event/comment/last/{eventtoken}', \photobox\control\CommentController::class . ':getEventLastComment');
@@ -68,13 +75,17 @@ $app->get('/event/comment/last/{eventtoken}', \photobox\control\CommentControlle
 //Recupere tous les commentaires d'un event
 $app->get('/event/comment/{eventtoken}', \photobox\control\CommentController::class . ':getEventComments');
 
-$app->post('/event', \photobox\control\EventController::class . ':create');
+$app->post('/event', \photobox\control\EventController::class . ':create')
+    ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
+    ->add(new Validation($container->settings['postEventValidator']));
 
 //Supprime un event via son token
 $app->delete('/event/{eventToken}', \photobox\control\EventController::class . ':deleteEvent');
 
 //Update un event via son token
-$app->put('/event/{eventToken}', \photobox\control\EventController::class . ':updateEvent');
+$app->put('/event/{eventToken}', \photobox\control\EventController::class . ':updateEvent')
+    ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
+    ->add(new Validation($container->settings['putEventValidator']));
 
 $app->get('/event/pictures/{eventtoken}', \photobox\control\PictureController::class . ':getEventPictures');
 
@@ -88,7 +99,9 @@ $app->get('/events',\photobox\control\EventController::class . ':getPublicEvents
 
 $app->post('/event/join/public/{eventtoken}',\photobox\control\EventController::class . ':joinPublicEvent');
 
-$app->post('/event/join/private[/]', \photobox\control\EventController::class . ':joinPrivateEvent');
+$app->post('/event/join/private[/]', \photobox\control\EventController::class . ':joinPrivateEvent')
+    ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
+    ->add(new Validation($container->settings['postJoinPrivateEvent']));
 
 $app->get('/events/involved',\photobox\control\EventController::class . ':getUserRegisteredEvents');
 
@@ -96,7 +109,9 @@ $app->get('/events/created',\photobox\control\EventController::class . ':getEven
 
 $app->post('/login', \photobox\control\AuthController::class . ':login');
 
-$app->post('/player/auth', \photobox\control\PlayerController::class . ':eventAuth');
+$app->post('/player/auth', \photobox\control\PlayerController::class . ':eventAuth')
+    ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
+    ->add(new Validation($container->settings['playerAuth']));
 
 $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
     $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
