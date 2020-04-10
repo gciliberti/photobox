@@ -230,7 +230,14 @@ class EventController
     public function getEventCreated(Request $request, Response $response, $args)
     {
         $user = $request->getAttribute('token');
-        $events = $this->db->event->find(['author' => $user['id']]);
+        $events = $this->db->event->find(['$and' => [
+            ['author' => $user["id"]],
+            ['$or' => [
+                ['status' => "prochainement"],
+                ['status' => "en_cours"]
+            ]]
+        ]
+        ]);
         $evenements = array();
         foreach ($events as $event) {
             $arrayevent = array();
