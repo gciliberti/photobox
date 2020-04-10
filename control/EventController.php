@@ -166,7 +166,7 @@ class EventController
     public function getUserRegisteredEvents(Request $request, Response $response, $args)
     {
         $user = $request->getAttribute('token');
-        $events = $this->db->event->findfind(['$and' => [
+        $events = $this->db->event->find(['$and' => [
             ['members' => $user['id']],
             ['$or' => [
                 ['status' => "prochainement"],
