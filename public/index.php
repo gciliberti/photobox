@@ -54,7 +54,6 @@ $app->post('/register[/]', \photobox\control\AuthController::class . ':register'
     ->add(\photobox\middleware\Validator::class . ':dataFormatErrorHandler')
     ->add(new Validation($container->settings['registerValidator']));
 
-
 //Get une image avec son ID
 $app->get('/picture/{id}', \photobox\control\PictureController::class . ':send');
 
