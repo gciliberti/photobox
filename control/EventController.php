@@ -126,6 +126,7 @@ class EventController
             "date" => $event->date,
             "location" => $event->location,
             "is_public" => $event->is_public,
+            "playerpass" => $event->playerpass,
             "description" => $event->description,
             "token" => $event->token,
         ];
@@ -227,6 +228,7 @@ class EventController
             $arrayevent['is_public'] = $event->is_public;
             $arrayevent['description'] = $event->description;
             $arrayevent['members'] = $event->members;
+            $arrayevent["playerpass"] = $event->playerpass;
             $arrayevent['token'] = $event->token;
             $evenements[] = $arrayevent;
         }
