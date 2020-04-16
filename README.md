@@ -1,3 +1,3 @@
 # photobox
 
-Api communiquqnt avec l'application mobile PhotoBox
+Api communiquant avec l'application mobile PhotoBox
